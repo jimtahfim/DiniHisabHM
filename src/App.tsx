@@ -44,6 +44,7 @@ function App() {
       setActiveTab={handleTabChange}
       historyCount={history.length}
       onOpenHistory={() => setIsHistoryOpen(true)}
+      developer={settingsHook.developer}
     >
       {/* SPA Tab Routers */}
       {activeTab === 'home' && (
@@ -84,6 +85,7 @@ function App() {
         <QurbaniFeature
           onSaveHistory={(sum, inp, res) => handleSaveHistory('qurbani', 'কুরবানী যোগ্যতা ও হিসাব', sum, inp, res)}
           initialState={selectedHistoryItem?.toolType === 'qurbani' ? selectedHistoryItem : undefined}
+          settingsHook={settingsHook}
         />
       )}
 
