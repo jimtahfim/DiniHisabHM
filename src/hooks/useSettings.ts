@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import rules from '../config/rules.json';
+import defaultSettings from '../config/settings.json';
 
 export interface GoldRates {
   '24k': number;
@@ -32,55 +32,60 @@ export interface DiniSettings {
   fitraRates: FitraRates;
 }
 
-const DEFAULT_GOLD_RATES: GoldRates = {
-  '24k': 11500,
-  '22k': rules.nisab.defaultGoldPricePerGram, // 10500
-  '21k': 10020,
-  '18k': 8590,
-  'traditional': 7150
-};
-
-const DEFAULT_SILVER_RATES: SilverRates = {
-  '22k': rules.nisab.defaultSilverPricePerGram, // 160
-  '21k': 153,
-  '18k': 131,
-  'traditional': 100
-};
-
-const DEFAULT_FITRA_RATES: FitraRates = {
-  wheat: 115,
-  barley: 400,
-  date: 2000,
-  raisin: 1800,
-  cheese: 2800
-};
-
 const LOCAL_STORAGE_KEY = 'dinihisab_settings_v2'; // Bump version since schema changed
+const LAST_JSON_DEFAULTS_KEY = 'dinihisab_last_json_defaults';
 
 export function useSettings() {
   const [settings, setSettings] = useState<DiniSettings>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+      const lastJsonDefaults = localStorage.getItem(LAST_JSON_DEFAULTS_KEY);
+      
+      const currentJsonDefaultsStr = JSON.stringify({
+        goldRates: defaultSettings.goldRates,
+        silverRates: defaultSettings.silverRates,
+        fitraRates: defaultSettings.fitraRates
+      });
+      
+      const isJsonModified = lastJsonDefaults !== currentJsonDefaultsStr;
+
       if (saved) {
         const parsed = JSON.parse(saved);
+        
+        // If the JSON was modified, automatically sync the active settings
+        if (isJsonModified) {
+          const mergedSettings = {
+            ...parsed,
+            goldRates: { ...parsed.goldRates, ...defaultSettings.goldRates },
+            silverRates: { ...parsed.silverRates, ...defaultSettings.silverRates },
+            fitraRates: { ...parsed.fitraRates, ...defaultSettings.fitraRates }
+          };
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(mergedSettings));
+          localStorage.setItem(LAST_JSON_DEFAULTS_KEY, currentJsonDefaultsStr);
+          return mergedSettings;
+        }
+
         // Ensure all properties exist in loaded settings
         if (parsed.goldRates && parsed.silverRates && parsed.selectedGoldCarat && parsed.selectedSilverCarat) {
           if (!parsed.fitraRates) {
-            parsed.fitraRates = { ...DEFAULT_FITRA_RATES };
+            parsed.fitraRates = { ...defaultSettings.fitraRates };
           }
           return parsed;
         }
       }
+
+      // Initialize and save current defaults
+      localStorage.setItem(LAST_JSON_DEFAULTS_KEY, currentJsonDefaultsStr);
     } catch (e) {
       console.error('Failed to parse settings', e);
     }
 
     return {
-      goldRates: { ...DEFAULT_GOLD_RATES },
-      silverRates: { ...DEFAULT_SILVER_RATES },
-      selectedGoldCarat: '22k',
-      selectedSilverCarat: '22k',
-      fitraRates: { ...DEFAULT_FITRA_RATES }
+      goldRates: { ...defaultSettings.goldRates },
+      silverRates: { ...defaultSettings.silverRates },
+      selectedGoldCarat: defaultSettings.selectedGoldCarat as keyof GoldRates,
+      selectedSilverCarat: defaultSettings.selectedSilverCarat as keyof SilverRates,
+      fitraRates: { ...defaultSettings.fitraRates }
     };
   });
 
@@ -134,11 +139,11 @@ export function useSettings() {
 
   const resetToDefaults = () => {
     setSettings({
-      goldRates: { ...DEFAULT_GOLD_RATES },
-      silverRates: { ...DEFAULT_SILVER_RATES },
-      selectedGoldCarat: '22k',
-      selectedSilverCarat: '22k',
-      fitraRates: { ...DEFAULT_FITRA_RATES }
+      goldRates: { ...defaultSettings.goldRates },
+      silverRates: { ...defaultSettings.silverRates },
+      selectedGoldCarat: defaultSettings.selectedGoldCarat as keyof GoldRates,
+      selectedSilverCarat: defaultSettings.selectedSilverCarat as keyof SilverRates,
+      fitraRates: { ...defaultSettings.fitraRates }
     });
   };
 
@@ -149,6 +154,7 @@ export function useSettings() {
     updateFitraRate,
     setSelectedGoldCarat,
     setSelectedSilverCarat,
-    resetToDefaults
+    resetToDefaults,
+    developer: defaultSettings.developer
   };
 }

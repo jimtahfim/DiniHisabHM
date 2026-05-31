@@ -16,13 +16,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer 
 } from 'recharts';
+import { useSettings } from '../../hooks/useSettings';
 
 interface QurbaniFeatureProps {
   onSaveHistory: (summary: string, inputs: any, result: any) => void;
   initialState?: { inputs: any; result: any };
+  settingsHook: ReturnType<typeof useSettings>;
 }
 
-export function QurbaniFeature({ onSaveHistory, initialState }: QurbaniFeatureProps) {
+export function QurbaniFeature({ onSaveHistory, initialState, settingsHook }: QurbaniFeatureProps) {
   // Steps: 1: Eligibility, 2: Calculator, 3: Results
   const [step, setStep] = useState(1);
 
@@ -110,12 +112,15 @@ export function QurbaniFeature({ onSaveHistory, initialState }: QurbaniFeaturePr
 ------------------------------------------
 ১. কুরবানী যোগ্যতা: ${result.isEligible ? 'ওয়াজিব' : 'এখনও ওয়াজিব নয়'}
 ২. পশুর ধরণ: ${result.animalLabel}
-৩. পশুর মোট মূল্য/বাজেট: ${formatBanglaCurrency(result.totalCost)}
-৪. শরিক বা অংশের সংখ্যা: ${convertToBanglaNumber(result.sharesCount)} টি
-------------------------------------------
-আমার অংশের প্রাক্কলিত ব্যয়: ${formatBanglaCurrency(result.costPerPerson)}
+৩. শরিক বা অংশ: ${convertToBanglaNumber(result.sharesCount)} টি
+৪. পশুর মোট মূল্য: ${formatBanglaCurrency(result.totalCost)}
+৫. আমার প্রদেয় খরচ: ${formatBanglaCurrency(result.costPerPerson)}
 ------------------------------------------
 হিসাবটি www.dinihisab.com প্ল্যাটফর্ম থেকে প্রস্তুতকৃত।`;
+
+  const silverCarat = settingsHook.settings.selectedSilverCarat;
+  const silverPrice = settingsHook.settings.silverRates[silverCarat];
+  const silverNisabValue = Math.round(rules.nisab.silverGram * silverPrice);
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto print-container">
@@ -159,7 +164,7 @@ export function QurbaniFeature({ onSaveHistory, initialState }: QurbaniFeaturePr
             className="rounded-2xl border border-gray-200/60 dark:border-gray-800/60 bg-white dark:bg-darkBg-light/30 p-6 sm:p-8 space-y-6 shadow-sm no-print"
           >
             <div className="space-y-2">
-              <span className="text-xs font-bold text-orange-655 dark:text-orange-400 tracking-wider uppercase">ধাপ ১: যোগ্যতা যাচাই</span>
+              <span className="text-xs font-bold text-orange-655 dark:text-orange-455 tracking-wider uppercase">ধাপ ১: যোগ্যতা যাচাই</span>
               <h3 className="text-xl font-bold text-gray-800 dark:text-white font-siliguri">কার উপর কুরবানী ওয়াজিব হয়?</h3>
               <p className="text-xs sm:text-sm text-gray-500">১০ই জিলহজ্জ ফজর থেকে ১২ই জিলহজ্জ সূর্যাস্ত পর্যন্ত সময়ের মধ্যে যার মালিকানায় নিসাব পরিমাণ উদ্বৃত্ত অর্থ বা সম্পদ থাকে, তার উপর কুরবানী করা ওয়াজিব।</p>
             </div>
@@ -169,7 +174,7 @@ export function QurbaniFeature({ onSaveHistory, initialState }: QurbaniFeaturePr
               <div className="space-y-3">
                 <label className="text-sm sm:text-base font-bold text-gray-800 dark:text-gray-200 font-siliguri flex items-start gap-2">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-400 font-bold text-xs">১</span>
-                  ১০ই থেকে ১২ই জিলহজ্জের মধ্যে আপনার নিকট কি মৌলিক প্রয়োজনের অতিরিক্ত ও ঋণমুক্ত ৫২.৫ তোলা রুপার সমমূল্য সম্পদ (৳৮০-৯০ হাজার বা ততোধিক মূল্যের ক্যাশ/সোনা/রুপা) রয়েছে?
+                  ১০ই থেকে ১২ই জিলহজ্জের মধ্যে আপনার নিকট কি মৌলিক প্রয়োজনের অতিরিক্ত ও ঋণমুক্ত ৫২.৫ তোলা রুপার সমমূল্য সম্পদ (৳{convertToBanglaNumber(Math.round(silverNisabValue / 1000))} হাজার বা ততোধিক মূল্যের ক্যাশ/সোনা/রুপা) রয়েছে?
                 </label>
                 <div className="flex gap-3 pl-8">
                   <button

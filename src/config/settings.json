@@ -1,0 +1,41 @@
+{
+  "developer": {
+    "nameEn": "HM Innovations",
+    "nameBn": "এইচএম ইনোভেশন্স",
+    "logoUrl": "/src/assets/hm_innovations.jpg",
+    "website": "https://hminnovations.com",
+    "email": "info@hminnovations.com",
+    "taglineBn": "উদ্ভাবনী প্রযুক্তির মাধ্যমে দ্বীনের খিদমত",
+    "taglineEn": "Serving Deen through Innovative Technology",
+    "descriptionBn": "আমরা অত্যাধুনিক ডিজিটাল সমাধান, মোবাইল ও ওয়েব অ্যাপ্লিকেশন তৈরির মাধ্যমে মুসলিম উম্মাহর জন্য দ্বীনি ও ব্যবহারিক খিদমত প্রদানে প্রতিশ্রুতিবদ্ধ।",
+    "descriptionEn": "We are dedicated to building modern digital solutions, web & mobile applications serving practical and spiritual needs of the Muslim Ummah.",
+    "servicesBn": [
+      "অত্যাধুনিক ওয়েব ও মোবাইল অ্যাপ্লিকেশন ডেভেলপমেন্ট",
+      "ইসলামী ও দ্বীনি ডিজিটাল সলিউশন ডিজাইন",
+      "কাস্টম সফটওয়্যার ও ডাটাবেজ সলিউশন",
+      "ইউজার এক্সপেরিয়েন্স (UI/UX) ডিজাইন"
+    ]
+  },
+  "goldRates": {
+    "24k": 11500,
+    "22k": 10500,
+    "21k": 10020,
+    "18k": 8590,
+    "traditional": 7150
+  },
+  "silverRates": {
+    "22k": 160,
+    "21k": 153,
+    "18k": 131,
+    "traditional": 100
+  },
+  "fitraRates": {
+    "wheat": 115,
+    "barley": 400,
+    "date": 2000,
+    "raisin": 1800,
+    "cheese": 2800
+  },
+  "selectedGoldCarat": "22k",
+  "selectedSilverCarat": "22k"
+}

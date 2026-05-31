@@ -1,7 +1,9 @@
-import { type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { History, HelpCircle, Settings } from 'lucide-react';
 import { convertToBanglaNumber } from '../utils/banglaNumber';
+import { DeveloperModal } from './DeveloperModal';
+import logoImg from '../assets/hm_innovations.jpg';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -9,6 +11,7 @@ interface AppLayoutProps {
   setActiveTab: (tab: string) => void;
   historyCount: number;
   onOpenHistory: () => void;
+  developer: any;
 }
 
 export function AppLayout({
@@ -16,8 +19,11 @@ export function AppLayout({
   activeTab,
   setActiveTab,
   historyCount,
-  onOpenHistory
+  onOpenHistory,
+  developer
 }: AppLayoutProps) {
+  const [isDevModalOpen, setIsDevModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-darkBg-darkest text-gray-900 dark:text-gray-100 transition-colors duration-200">
       
@@ -108,12 +114,52 @@ export function AppLayout({
           <p className="max-w-3xl mx-auto text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed font-siliguri">
             দ্বীনি হিসাব প্ল্যাটফর্মের হিসাবসমূহ মূলত কুরআন, সহীহ হাদীস এবং নির্ভরযোগ্য ইসলামী ফিকহ ও হানাফি মাযহাবের মূলনীতি অনুযায়ী সুনির্দিষ্ট নিয়মে প্রণয়ন করা হয়েছে। যাকাত, মীরাস এবং উশরের মতো বাধ্যবাধকতার ক্ষেত্রে জটিল বা সংবেদনশীল বিষয়গুলোর জন্য কোনো যোগ্য মুফতি বা আলেমের সাথে সরাসরি পরামর্শ করার জন্য ব্যবহারকারীকে বিশেষভাবে অনুরোধ জানানো হচ্ছে।
           </p>
+          
           <div className="h-px bg-gray-100 dark:bg-gray-800 my-6 sm:my-8 max-w-sm mx-auto" />
+          
+          {/* Premium Developer Credit Section */}
+          {developer && (
+            <div className="flex flex-col items-center gap-2 mb-6">
+              <span className="text-[10px] sm:text-xs font-semibold text-gray-400 dark:text-gray-500 font-siliguri tracking-wider">
+                ডিজাইন ও ডেভেলপমেন্টে
+              </span>
+              <button
+                onClick={() => setIsDevModalOpen(true)}
+                className="group relative flex items-center gap-2.5 px-4 py-2 rounded-2xl border border-emerald-500/10 dark:border-emerald-500/20 bg-gray-50/50 dark:bg-darkBg-light/10 hover:border-emerald-500/35 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/10 shadow-sm hover:shadow-md transition-all duration-300 font-siliguri hover:scale-[1.03]"
+              >
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-emerald-500 to-amber-500 rounded-2xl blur opacity-0 group-hover:opacity-10 transition duration-300" />
+                
+                <div className="w-5 h-5 rounded-md overflow-hidden bg-white border border-gray-200 dark:border-gray-800 shadow-sm shrink-0">
+                  <img 
+                    src={logoImg} 
+                    alt={developer.nameEn} 
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <span className="text-xs sm:text-sm font-extrabold text-emerald-900 dark:text-emerald-400 group-hover:text-emerald-600 dark:group-hover:text-emerald-350 transition-colors">
+                  {developer.nameBn}
+                </span>
+                <span className="text-[10px] font-semibold text-gray-450 dark:text-gray-500 font-mono tracking-tight bg-gray-200/50 dark:bg-gray-800/80 px-1.5 py-0.5 rounded-md group-hover:bg-emerald-500/10 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                  {developer.nameEn}
+                </span>
+              </button>
+            </div>
+          )}
+
           <p className="text-[11px] sm:text-xs text-gray-400 dark:text-gray-500 font-siliguri">
             © ১৪৪৭ হিজরি - ২০২৬ দ্বীনি হিসাব। সর্বস্বত্ব সংরক্ষিত। এটি একটি উন্মুক্ত ইসলামী গাইড ও ফাইন্যান্সিয়াল প্ল্যাটফর্ম।
           </p>
         </div>
       </footer>
+
+      {/* Developer Information Modal */}
+      {developer && (
+        <DeveloperModal
+          isOpen={isDevModalOpen}
+          onClose={() => setIsDevModalOpen(false)}
+          developer={developer}
+        />
+      )}
     </div>
   );
 }
