@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Custom Scrollbar Styles for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-darkBg-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-emerald-600/30 hover:bg-emerald-600/50 rounded-full transition-colors;
+}
+
+/* Custom animations and effects */
+.glassmorphism {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glassmorphism {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Keyframe animations for loading and numbers */
+@keyframes pulse-gold {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: .8;
+    transform: scale(1.02);
+  }
+}
+
+.animate-pulse-gold {
+  animation: pulse-gold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Print Styles for premium, highly legible PDF export using standard print */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm !important;
+  }
+
+  html, body {
+    background: white !important;
+    color: black !important;
+    font-size: 10.5pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide elements that shouldn't be printed */
+  .no-print, 
+  nav, 
+  footer, 
+  button, 
+  header,
+  .theme-switcher,
+  .history-panel-trigger {
+    display: none !important;
+  }
+
+  /* Make sure background colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Printable container styling forced on one page */
+  .print-container {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-inside: avoid !important;
+    overflow: hidden !important;
+  }
+
+  /* Tighten spacing for compact one-page layout */
+  .print-container .space-y-8 > * + * {
+    margin-top: 1rem !important;
+  }
+  
+  .print-container .space-y-6 > * + * {
+    margin-top: 0.75rem !important;
+  }
+
+  .print-container .p-6,
+  .print-container .p-8 {
+    padding: 1rem !important;
+  }
+
+  .print-container .gap-6 {
+    gap: 1rem !important;
+  }
+
+  .print-container .gap-8 {
+    gap: 1.25rem !important;
+  }
+
+  /* Shrink chart and SVG to make sure they do not cause overflows */
+  .print-container svg,
+  .print-container .recharts-responsive-container {
+    max-height: 160px !important;
+    height: 160px !important;
+  }
+
+  .print-page-break {
+    display: none !important;
+  }
+}
